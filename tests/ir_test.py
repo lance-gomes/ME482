@@ -1,16 +1,14 @@
 import RPi.GPIO as IO
 
-IO.setmode (IO.BCM)
+IO.setmode(IO.BCM)
 
-IO.setup(2,IO.OUT) #GPIO 2 -> Red LED as output
-IO.setup(3,IO.OUT) #GPIO 3 -> Green LED as output
-IO.setup(14,IO.IN) #GPIO 14 -> IR sensor as input
+# Connect GPIO to pin #5
+# Connect Power to 3.3 V, GND to GND
+IO.setup(3,IO.IN)
 
 while True:
-    if IO.input(14) == True:
-        IO.output(2, True)
-        IO,output(3, False)
+    if IO.input(3):
+        print("Path Clear!")
     else:
-        IO.output(3, True)
-        IO.output(2, False)
+        print("Obstacle Detected")
 
