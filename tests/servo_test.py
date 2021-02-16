@@ -1,7 +1,5 @@
-import RPi.GPIO as IO
-import Adafruit_PCA9685
+from adafruit_servokit import ServoKit
 import time
-from __future__ import division
 
 # Pin Layout #
 #    1 2     #
@@ -23,29 +21,29 @@ from __future__ import division
 # Pin Layout #
 
 # Constants
-SERVO_SDA_PORT = 3
-SERVO_SCE_PORT = 5
-SERVO_MAX = [ 600, 600 ]
-SERVO_MIN = [ 150, 150 ]
-SERVO_COUNT = 2
-
 COLD_VALVE_SERVO = 0
 HOT_VALVE_SERVO = 1
 
-# State variables
-is_hand_present = False
-has_printed = False
+kit = ServoKit(channels=16)
 
-pwm = Adafruit_PCA9685.PCA9685()
+def set_cold_valve_angle(degrees):
+  kit.servo[COLD_VALVE_SERVO].angle = degrees
 
-def set_cold_valve(opening):
-  pwm.set_pwm(COLD_VALVE_SERVO, 0, opening)
-
-def set_hot_valve(opening):
-  pwm.set_pwm(HOT_VALVE_SERVO, 0, opening)
+def set_hot_valve_angle(degrees):
+  kit.servo[HOT_VALVE_SERVO].angle = degrees
 
 def main():
-  
+
+  while True:
+    set_cold_valve_angle(0)
+    set_hot_valve_angle(0)
+
+    time.sleep(2)
+
+    set_cold_valve_angle(90)
+    set_hot_valve_angle(90)
+
+    time.sleep(2)
 
 if __name__ == "__main__":
-    main()
+  main()
