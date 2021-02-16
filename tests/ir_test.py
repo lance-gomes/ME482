@@ -3,7 +3,6 @@ import RPi.GPIO as IO
 # Pin Layout #
 #    1 2     #
 #    3 4     #
-#    3 4     #
 #    5 6     #
 #    7 8     #
 #    9 10    #
@@ -21,27 +20,47 @@ import RPi.GPIO as IO
 
 # Pin Setup
 IO.setmode(IO.BOARD)
-IO.setup(5,IO.IN)
+IO.setup(11,IO.IN)
+IO.setup(13,IO.IN)
+IO.setup(15,IO.IN)
 
-is_hand_present = False
-has_printed = False
+sensor_1_old = False
+sensor_2_old = False
+sensor_3_old = False
 
-while True:
+def main():
 
-    if IO.input(5) and is_hand_present:
-        is_hand_present = False
-        has_printed = False
-    elif not IO.input(5) and not is_hand_present:
-        is_hand_present = True
-        has_printed = False
+  while True:
+    # IO.input(x) returns true if path is clear
+    # Set sensor_x to true if path is blocked
+    sensor_1 = not IO.input(11)
+    sensor_2 = not IO.input(13)
+    sensor_3 = not IO.input(15)
 
-
-    if not has_printed:
-        if is_hand_present:
-            print("Hand Detected!")
+    if sensor_1 ! = sensor_1_old:
+        if sensor_1:
+            print("Sensor 1 activated")
         else:
-            print("Hand Removed!")
-        print("")
+            print("Sensor 1 deactivated")
 
-        has_printed = True
+    if sensor_2 ! = sensor_2_old:
+        if sensor_2:
+            print("Sensor 2 activated")
+        else:
+            print("Sensor 2 deactivated")
+
+    if sensor_3 ! = sensor_3_old:
+        if sensor_3:
+            print("Sensor 3 activated")
+        else:
+            print("Sensor 3 deactivated")
+
+    sensor_1_old = sensor_1
+    sensor_2_old = sensor_2
+    sensor_3_old = sensor_3
+
+
+if __name__ == "__main__":
+  main()
+
 
