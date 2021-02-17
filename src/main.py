@@ -45,11 +45,6 @@ def main():
         # either IR sensor detects a hand, run hand washer
         while not IO.input(11) or not IO.input(13):
 
-            if not IO.input(11):
-                print("Sensor 1 active")
-            else:
-                print("Sensor 2 active")
-
             # direct 3-way valve to hand wash line
             three_way(True)
             print("directed towards hand washer")
