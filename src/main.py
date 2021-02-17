@@ -29,12 +29,6 @@ IO.setup(15,IO.IN)
 def main():
     #Initilize
 
-    # hand washer
-    sensor_1_old = False
-    sensor_2_old = False
-    # fauct
-    sensor_3_old = False
-
     COLD_VALVE_SERVO = 0
     HOT_VALVE_SERVO = 1
     kit = ServoKit(channels=16)
@@ -47,70 +41,60 @@ def main():
 
     while True:
         # IO.input(x) returns true if path is clear
-        # Set sensor_x to true if path is blocked
-        sensor_1 = not IO.input(11)
-        sensor_2 = not IO.input(13)
-        sensor_3 = not IO.input(15)
 
         # either IR sensor detects a hand, run hand washer
-        if sensor_1 != sensor_1_old or sensor_2 != sensor_2_old:
-            # hand detected
-            if sensor_1 or sensor_2:
-                if sensor_1:
-                    print("Sensor 1 active")
-                else:
-                    print("Sensor 2 active")
+        while not IO.input(11) or not IO.input(13):
 
-                # direct 3-way valve to hand wash line
-                three_way(True)
-                print("directed towards hand washer")
-
-                # turn on water
-                # run for a bit to get hands wet
-                water_on()
-                print("first rinse")
-                time.sleep(2)
-
-                # open soap valve
-                # cycle and then end with water
-                two_way(True)
-                print("first soap cycle")
-                time.sleep(2)
-                two_way(False)
-                time.sleep(2)
-                two_way(True)
-                print("second soap cycle")
-                time.sleep(2)
-                two_way(False)
-
-                # final rinse
-                print("final rinse")
-                time.sleep(5)
-
-                # cut water
-                water(False)
-
-            # hand removed    
+            if not IO.input(11):
+                print("Sensor 1 active")
             else:
-                print("Sensor 1 and 2 deactivated")
-                # ensure everything is off
-                two_way(False)
-                three_way(False)
-                water(False)
+                print("Sensor 2 active")
+
+            # direct 3-way valve to hand wash line
+            three_way(True)
+            print("directed towards hand washer")
+
+            # turn on water
+            # run for a bit to get hands wet
+            water_on()
+            print("first rinse")
+            time.sleep(2)
+
+            # open soap valve
+            # cycle and then end with water
+            two_way(True)
+            print("first soap cycle")
+            time.sleep(2)
+            two_way(False)
+            time.sleep(2)
+            two_way(True)
+            print("second soap cycle")
+            time.sleep(2)
+            two_way(False)
+
+            # final rinse
+            print("final rinse")
+            time.sleep(5)
+
+            # cut water
+            water(False)
+
+        # hand removed    
+        else:
+            print("Sensor 1 and 2 deactivated")
+            # ensure everything is off
+            two_way(False)
+            three_way(False)
+            water(False)
         
         # run regular faucet
-        if sensor_3 != sensor_3_old:
-            if sensor_3:
-                print("Sensor 3 activated")
-                three_way(False)
-                water_on(True)
-            else:
-                print("Sensor 3 deactivated")
-                water_on(False)
-
-        sensor_1_old = sensor_1
-        sensor_2_old = sensor_2
-        sensor_3_old = sensor_3
+        while not IO.input(15):
+            print("Sensor 3 active")
+            three_way(False)
+            water_on(True)
+        else:
+            print("Sensor 3 deactivated")
+            water_on(False)
 
 def set_cold_valve_angle(degrees):
   kit.servo[COLD_VALVE_SERVO].angle = degrees
@@ -139,7 +123,7 @@ def two_way(bool):
         # open 2-way
     else:
         #close 2-way
-        
+
 
 if __name__ == "__main__":
     main()
