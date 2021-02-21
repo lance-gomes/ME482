@@ -2,6 +2,7 @@ import RPi.GPIO as IO
 from adafruit_servokit import ServoKit
 import time
 
+
 # Pin Layout #
 #    1 2     #
 #    3 4     #
