@@ -11,12 +11,12 @@ def main():
       IO.output(19, IO.HIGH)
       IO.output(21, IO.HIGH)
 
-      time.sleep(2)
+      time.sleep(10)
 
       IO.output(19, IO.LOW)
       IO.output(21, IO.LOW)
 
-      time.sleep(2)
+      time.sleep(10)
 
 
 if __name__ == "__main__":
