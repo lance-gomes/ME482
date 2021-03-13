@@ -28,7 +28,7 @@ IO.setup(13,IO.IN)
 IO.setup(15,IO.IN)
 
 def main():
-        #Initilize
+    #Initilize
 
     COLD_VALVE_SERVO = 0
     HOT_VALVE_SERVO = 1
@@ -40,12 +40,14 @@ def main():
     three_way(False)
     two_way(False)
 
+    isOffState = True 
+
     while True:
         # IO.input(x) returns true if path is clear
 
         # either IR sensor detects a hand, run hand washer
         while not IO.input(11) or not IO.input(13):
-
+            isOffState=False
             # direct 3-way valve to hand wash line
             three_way(True)
             print("directed towards hand washer")
@@ -56,41 +58,26 @@ def main():
             print("first rinse")
             time.sleep(2)
 
-            # open soap valve
-            # cycle and then end with water
-            two_way(True)
-            print("first soap cycle")
-            time.sleep(2)
-            two_way(False)
-            time.sleep(2)
-            two_way(True)
-            print("second soap cycle")
-            time.sleep(2)
-            two_way(False)
+            # apply soap cycle 
+            soap()
 
             # final rinse
             print("final rinse")
             time.sleep(5)
 
-            # cut water
-            water(False)
-
-        # hand removed    
-        else:
-            print("Sensor 1 and 2 deactivated")
-            # ensure everything is off
-            two_way(False)
-            three_way(False)
-            water(False)
-
-        # run regular faucet
+        # run regular faucet - our setup only allows one or the other so we can just to elif here 
         while not IO.input(15):
+            isOffState=False
             print("Sensor 3 active")
             three_way(False)
             water_on(True)
-        else:
-            print("Sensor 3 deactivated")
-            water_on(False) 
+        
+        if isOffState == False:
+            # turn on the stuff
+            # cut water
+            water(False)
+
+            isOffState = True 
 
 def set_cold_valve_angle(degrees):
   kit.servo[COLD_VALVE_SERVO].angle = degrees
@@ -100,26 +87,36 @@ def set_hot_valve_angle(degrees):
 
 def water_on(bool):
     # CONFIRM ANGLES
-    if bool:
+    if bool: # confirm that these don't keep turning they stop at 90 degree 
         set_cold_valve_angle(90)
         set_hot_valve_angle(90)
     else:
         set_cold_valve_angle(0)
         set_hot_valve_angle(0)
 
-# false == main line, true == hand washer
+# Direct to the either soap line or regular line 
 def three_way(bool):
     if bool:
         # direct flow to hand washer
     else:
         # direct flow to main
 
+# Turn on and off the system  
 def two_way(bool):
     if bool:
         # open 2-way
     else:
         #close 2-way
 
+# Soap Cycle
+def soap():
+    pump(True)
+    print("soap cycle")
+    two_way(False)
+
+# Turn on and off pump 
+def pump():
+    return x
 
 if __name__ == "__main__":
     main()
