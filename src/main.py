@@ -20,15 +20,13 @@ def main():
 
     while True:
         # IO.input(x) returns true if path is clear
-        sensor1 = IO.input(11)
-        sensor2 = IO.input(13)
-        sensor3 = IO.input(15)
 
         # either IR sensor detects a hand, run hand washer
         while IO.input(11) == 0 or IO.input(13) == 0:
             isOffState=False
             # direct 3-way valve to hand wash line
-            three_way(True)
+            three_way(False)
+            time.sleep(6) # we need to wait 6 sec until the 3way turns NOOOO
             print("directed towards hand washer")
 
             # turn on water
@@ -48,7 +46,8 @@ def main():
         while IO.input(15) == 0:
             isOffState=False
             print("Sensor 3 active /n")
-            three_way(False)
+            three_way(True)
+            time.sleep(6) # we need to wait 6 sec until the 3way turns NOOOO
             water(True)
             time.sleep(3) #sensor buggy just make it wait 3 seconds 
         
@@ -66,8 +65,11 @@ def water(input):
         IO.output(19, IO.LOW)
 
 # Direct to the either soap line or regular line 
+# false -> hand washer  
+# true -> main line
+# time to switch is ~ 6sec
 def three_way(input):
-    if input:
+    if not input:
         # direct to the handwasher 
         IO.output(21, IO.HIGH)
     else:
