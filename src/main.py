@@ -1,63 +1,93 @@
 import RPi.GPIO as IO
-from adafruit_servokit import ServoKit
 import time
-
-
-# Pin Layout #
-#    1 2     #
-#    3 4     #
-#    5 6     #
-#    7 8     #
-#    9 10    #
-#   11 12    #
-#   13 14    #
-#   15 16    #
-#   17 18    #
-#   19 20    #
-#   21 22    #
-#   23 24    #
-#   25 26    #
-#   27 28    #
-#   29 30    #
-# Pin Layout #
 
 # Pin Setup
 IO.setmode(IO.BOARD)
-IO.setup(11,IO.IN)
-IO.setup(13,IO.IN)
-IO.setup(15,IO.IN)
+
+IO.setup(11,IO.IN) # sensor 1 - hand washer
+IO.setup(13,IO.IN) # sensor 2 - hand washer 
+IO.setup(15,IO.IN) # base sensor 
+
+IO.setup(19, IO.OUT) # two way
+IO.setup(21, IO.OUT) # three way
 
 def main():
-    return 
+    #Initilize
+    three_way(False)
+    water(False)
 
-def set_cold_valve_angle(degrees):
-  kit.servo[COLD_VALVE_SERVO].angle = degrees
+    isOffState = True 
 
-def set_hot_valve_angle(degrees):
-  kit.servo[HOT_VALVE_SERVO].angle = degrees
+    while True:
+        # IO.input(x) returns true if path is clear
+        sensor1 = IO.input(11)
+        sensor2 = IO.input(13)
+        sensor3 = IO.input(15)
 
-def water_on(bool):
+        # either IR sensor detects a hand, run hand washer
+        while IO.input(11) == 0 or IO.input(13) == 0:
+            isOffState=False
+            # direct 3-way valve to hand wash line
+            three_way(True)
+            print("directed towards hand washer")
+
+            # turn on water
+            # run for a bit to get hands wet
+            water(True)
+            print("first rinse")
+            time.sleep(2)
+
+            # apply soap cycle 
+            soap()
+
+            # final rinse
+            print("final rinse")
+            time.sleep(5)
+
+        # run regular faucet - our setup only allows one or the other so we can just to elif here 
+        while IO.input(15) == 0:
+            isOffState=False
+            print("Sensor 3 active /n")
+            three_way(False)
+            water(True)
+            time.sleep(3) #sensor buggy just make it wait 3 seconds 
+        
+        if isOffState == False:
+            # cut water
+            water(False)
+            isOffState = True 
+
+# Two way controls the water on and off 
+def water(input):
     # CONFIRM ANGLES
-    if bool:
-        set_cold_valve_angle(90)
-        set_hot_valve_angle(90)
+    if not input: # confirm that these don't keep turning they stop at 90 degree 
+        IO.output(19, IO.HIGH)
     else:
-        set_cold_valve_angle(0)
-        set_hot_valve_angle(0)
+        IO.output(19, IO.LOW)
 
-# false == main line, true == hand washer
-def three_way(bool):
-    if bool:
-        # direct flow to hand washer
+# Direct to the either soap line or regular line 
+def three_way(input):
+    if input:
+        # direct to the handwasher 
+        IO.output(21, IO.HIGH)
     else:
         # direct flow to main
+        IO.output(21, IO.LOW)
 
-def two_way(bool):
-    if bool:
-        # open 2-way
+# Soap Cycle
+def soap():
+    pump(True)
+    print("soap cycle")
+    pump(False)
+
+# Turn on and off pump 
+def pump(input):
+    if input:
+        # turn on pump
+        return
     else:
-        #close 2-way
-
+        # turn off pump 
+        return  
 
 if __name__ == "__main__":
     main()

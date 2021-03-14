@@ -8,7 +8,7 @@ IO.setup(21, IO.OUT)
 
 def main():
   while True:
-      IO.output(19, IO.HIGH)
+      IO.output(19, IO.HIGH) 
       IO.output(21, IO.HIGH)
 
       time.sleep(10)
