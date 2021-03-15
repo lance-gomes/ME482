@@ -7,7 +7,7 @@ class Encoder(object):
     which connected via two pin A and B.
     """
     def __init__(self, A, B):
-        IO.setmode(IO.BOARD)
+        IO.setmode(IO.BCM)
         IO.setup(A, IO.IN)
         IO.setup(B, IO.IN)
         self.A = A
@@ -53,7 +53,7 @@ class Encoder(object):
 
 
 def main():
-  enc = Encoder(40, 38)
+  enc = Encoder(21, 20)
   while True:
       time.sleep(0.25)
       print(enc.read())

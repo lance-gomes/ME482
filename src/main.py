@@ -2,14 +2,14 @@ import RPi.GPIO as IO
 import time
 
 # Pin Setup
-IO.setmode(IO.BOARD)
+IO.setmode(IO.BCM) # Remove after we import servo_kit
 
-IO.setup(11,IO.IN) # sensor 1 - hand washer
-IO.setup(13,IO.IN) # sensor 2 - hand washer 
-IO.setup(15,IO.IN) # base sensor 
+IO.setup(17,IO.IN) # sensor 1 - hand washer
+IO.setup(27,IO.IN) # sensor 2 - hand washer 
+IO.setup(22,IO.IN) # base sensor 
 
-IO.setup(19, IO.OUT) # two way
-IO.setup(21, IO.OUT) # three way
+IO.setup(10, IO.OUT) # two way
+IO.setup(9, IO.OUT) # three way
 
 def main():
     #Initilize
@@ -22,7 +22,7 @@ def main():
         # IO.input(x) returns true if path is clear
 
         # either IR sensor detects a hand, run hand washer
-        while IO.input(11) == 0 or IO.input(13) == 0:
+        while IO.input(17) == 0 or IO.input(27) == 0:
             isOffState=False
             # direct 3-way valve to hand wash line
             three_way(False)
@@ -43,7 +43,7 @@ def main():
             time.sleep(5)
 
         # run regular faucet - our setup only allows one or the other so we can just to elif here 
-        while IO.input(15) == 0:
+        while IO.input(22) == 0:
             isOffState=False
             print("Sensor 3 active /n")
             three_way(True)
@@ -60,9 +60,9 @@ def main():
 def water(input):
     # CONFIRM ANGLES
     if not input: # confirm that these don't keep turning they stop at 90 degree 
-        IO.output(19, IO.HIGH)
+        IO.output(10, IO.HIGH)
     else:
-        IO.output(19, IO.LOW)
+        IO.output(10, IO.LOW)
 
 # Direct to the either soap line or regular line 
 # false -> hand washer  
@@ -71,10 +71,10 @@ def water(input):
 def three_way(input):
     if not input:
         # direct to the handwasher 
-        IO.output(21, IO.HIGH)
+        IO.output(9, IO.HIGH)
     else:
         # direct flow to main
-        IO.output(21, IO.LOW)
+        IO.output(9, IO.LOW)
 
 # Soap Cycle
 def soap():
