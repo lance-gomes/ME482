@@ -19,10 +19,10 @@ import RPi.GPIO as IO
 # Pin Layout #
 
 # Pin Setup
-IO.setmode(IO.BOARD)
-IO.setup(11,IO.IN)
-IO.setup(13,IO.IN)
-IO.setup(15,IO.IN)
+IO.setmode(IO.BCM)
+IO.setup(17,IO.IN)
+IO.setup(27,IO.IN)
+IO.setup(22,IO.IN)
 
 def main():
   
@@ -33,9 +33,9 @@ def main():
   while True:
     # IO.input(x) returns true if path is clear
     # Set sensor_x to true if path is blocked
-    sensor_1 = not IO.input(11)
-    sensor_2 = not IO.input(13)
-    sensor_3 = not IO.input(15)
+    sensor_1 = not IO.input(17)
+    sensor_2 = not IO.input(27)
+    sensor_3 = not IO.input(22)
 
     if sensor_1 != sensor_1_old:
         if sensor_1:

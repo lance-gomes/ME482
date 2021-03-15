@@ -1,4 +1,5 @@
 from adafruit_servokit import ServoKit
+import RPi.GPIO as IO
 import time
 
 # Pin Layout #
@@ -32,6 +33,8 @@ def set_hot_valve_angle(degrees):
   kit.servo[HOT_VALVE_SERVO].angle = degrees
 
 def main():
+
+  print(IO.getmode())
 
   while True:
     set_cold_valve_angle(0)
