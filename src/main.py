@@ -1,5 +1,7 @@
 import RPi.GPIO as IO
 import time
+import Encoder
+from adafruit_servokit import ServoKit
 
 # Pin Setup
 IO.setmode(IO.BCM) # Remove after we import servo_kit
@@ -13,10 +15,18 @@ IO.setup(9, IO.OUT) # three way
 
 def main():
     #Initilize
+    kit = ServoKit(channels=16)
+    encoder = Encoder(21, 20)
+
     three_way(False)
     water(False)
 
-    isOffState = True 
+    # Fully open valves
+    set_cold_valve_angle(kit, 0) 
+    set_hot_valve_angle(kit, 0)
+
+    isOffState = True
+    enc_pos = enc.read()
 
     while True:
         # IO.input(x) returns true if path is clear
@@ -54,7 +64,25 @@ def main():
         if isOffState == False:
             # cut water
             water(False)
-            isOffState = True 
+            isOffState = True
+        
+        if enc_pos != enc.read():
+            new_opening = enc.read() / 3
+
+            if new_opening >= 90:
+                new_opening = 90
+            elif new_opening <= -90:
+                new_opening = -90
+
+            if new_opening <= 0:
+                # Negative number => Make Colder => Close Hot valve
+                set_hot_valve_angle(kit, new_opening)
+            else:
+                # Positive number => Make Hotter => Close Cold valve 
+                set_cold_valve_angle(kit, new_opening)
+
+            enc_pos = enc.read()
+
 
 # Two way controls the water on and off 
 def water(input):
@@ -89,7 +117,13 @@ def pump(input):
         return
     else:
         # turn off pump 
-        return  
+        return
+
+def set_cold_valve_angle(kit, degrees):
+  kit.servo[0].angle = degrees
+
+def set_hot_valve_angle(kit, degrees):
+  kit.servo[1].angle = degrees
 
 if __name__ == "__main__":
     main()

@@ -9,7 +9,6 @@ class Encoder(object):
     def __init__(self, A, B):
         if IO.getmode() != IO.BCM:
           IO.setmode(IO.BCM)
-        IO.setmode(IO.BCM)
         IO.setup(A, IO.IN)
         IO.setup(B, IO.IN)
         self.A = A
@@ -52,15 +51,3 @@ class Encoder(object):
     """
     def read(self):
         return self.pos
-
-
-def main():
-  enc = Encoder(21, 20)
-  while True:
-      time.sleep(0.25)
-      print(enc.read())
-
-if __name__ == "__main__":
-  main()
-
-
