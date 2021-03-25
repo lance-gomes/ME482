@@ -21,8 +21,8 @@ import time
 # Pin Layout #
 
 # Constants
-COLD_VALVE_SERVO = 12
-HOT_VALVE_SERVO = 15
+COLD_VALVE_SERVO = 12 # 0 for port 12 is closed 
+HOT_VALVE_SERVO = 15 # 90 for port 15 is closed
 
 kit = ServoKit(channels=16)
 
@@ -40,7 +40,7 @@ def main():
     set_cold_valve_angle(0)
     set_hot_valve_angle(90)
 
-    time.sleep(2)
+    time.sleep(10)
 
     set_cold_valve_angle(90)
     set_hot_valve_angle(0)

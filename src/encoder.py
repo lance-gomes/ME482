@@ -7,7 +7,8 @@ class Encoder(object):
     which connected via two pin A and B.
     """
     def __init__(self, A, B):
-        IO.setmode(IO.BCM)
+        if IO.getmode() != IO.BCM:
+          IO.setmode(IO.BCM)
         IO.setup(A, IO.IN)
         IO.setup(B, IO.IN)
         self.A = A
@@ -49,16 +50,4 @@ class Encoder(object):
     read() simply returns the current position of the rotary encoder.
     """
     def read(self):
-        return self.pos
-
-
-def main():
-  enc = Encoder(40, 38)
-  while True:
-      time.sleep(0.25)
-      print(enc.read())
-
-if __name__ == "__main__":
-  main()
-
-
+        return self.pos 
