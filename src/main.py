@@ -56,36 +56,36 @@ class Encoder(object):
 
 def main():
     #Initilize
-    IO.setmode(IO.BCM)
+    # IO.setmode(IO.BCM)
 
     # IO.setup(17,IO.IN) # sensor 1 - hand washer
     # IO.setup(27,IO.IN) # sensor 2 - hand washer 
     # IO.setup(22,IO.IN) # base sensor
-    IO.setup(4, IO.IN)
+    # IO.setup(4, IO.IN)
 
-    IO.setup(10, IO.OUT) # two way
-    IO.setup(9, IO.OUT) # three way
-    IO.setup(11, IO.OUT) # pump
+    # IO.setup(10, IO.OUT) # two way
+    # IO.setup(9, IO.OUT) # three way
+    # IO.setup(11, IO.OUT) # pump
 
-    three_way(False)
-    water(False)
+    # three_way(False)
+    # water(True)
 
     isOffState = True 
 
     # HIGH == OFF
-    IO.output(11, IO.HIGH) # pump
-    IO.output(10, IO.HIGH) # pump
-    IO.output(9, IO.HIGH) # pump
+    # IO.output(11, IO.HIGH) # pump
+    # IO.output(10, IO.HIGH) # pump
+    # IO.output(9, IO.HIGH) # pump
 
-    # kit = ServoKit(channels=16)
+    kit = ServoKit(channels=16)
     enc = Encoder(21, 20)
     enc_pos = enc.read()
 
     cold_opening = 90
     hot_opening = 0
 
-    # kit.servo[12].angle = cold_opening
-    # kit.servo[15].angle = hot_opening
+    kit.servo[12].angle = cold_opening
+    kit.servo[15].angle = hot_opening
 
     # no noise from the 3 way (since its normally on the hand washer)
     # 2 way click 
@@ -97,14 +97,13 @@ def main():
     #2 way clicks 
 
     while True:
-        water(True)
         # IO.input(x) returns true if path is clear
         # print(IO.input(27) == 0)
         # either IR sensor detects a hand, run hand washer
-        print("Not in")
-        while IO.input(4) != 0:
-            print("first rinse")
-            print("it is in now ")
+        # print("Not in")
+        # while IO.input(4) != 0:
+        #     print("first rinse")
+        #     print("it is in now ")
             # direct 3-way valve to hand wash line
             # three_way(False)
             # time.sleep(3) # we need to wait 6 sec until the 3way turns NOOOO
@@ -131,34 +130,31 @@ def main():
         #     # time.sleep(6) # we need to wait 6 sec until the 3way turns NOOOO
         #     water(True)
         #     time.sleep(1) #sensor buggy just make it wait 3 seconds
+        prev_pos = enc.read()
+        print(prev_pos)
+        if enc_pos != prev_pos:
 
-        water(False)
-        # prev_pos = enc.read()
-        # print(prev_pos)
-        # if enc_pos != prev_pos:
-
-        #     if prev_pos > enc_pos:
-        #         cold_opening -= 2
-        #         hot_opening += 2
-        #     else:
-        #         cold_opening += 2
-        #         hot_opening -= 2
+            if prev_pos > enc_pos:
+                cold_opening -= 2
+                hot_opening += 2
+            else:
+                cold_opening += 2
+                hot_opening -= 2
 
             
-        #     if cold_opening <= 0:
-        #         cold_opening = 0
-        #     elif cold_opening > 90:
-        #         cold_opening = 90
+            if cold_opening <= 0:
+                cold_opening = 0
+            elif cold_opening > 90:
+                cold_opening = 90
 
-        #     if hot_opening <= 0:
-        #         hot_opening = 0
-        #     elif hot_opening > 90:
-        #         hot_opening = 90
+            if hot_opening <= 0:
+                hot_opening = 0
+            elif hot_opening > 90:
+                hot_opening = 90
 
-        #     kit.servo[12].angle = cold_opening
-        #     kit.servo[15].angle = hot_opening
-        #     enc_pos = enc.read()
-
+            kit.servo[12].angle = cold_opening
+            kit.servo[15].angle = hot_opening
+            enc_pos = enc.read()
 
         
 
